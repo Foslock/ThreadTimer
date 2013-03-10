@@ -3,6 +3,12 @@ ThreadTimer
 
 Uses the custom class OPTimer to create an accurate timer that uses background threading
 
+###How to get started
+
+1. Drag the files "OPTimer.h" and "OPTimer.m" into your project (make sure they are COPIED and added to the target).
+2. Put '#import "OPTimer.h"' wherever you want to use it.
+3. See below.
+
 ###How to use OPTimer
 
     // Create the timer like any normal Obj-c object
