@@ -13,7 +13,6 @@
 
 @property (assign) mach_timebase_info_data_t timeInfo;
 @property (strong) NSThread* backgroundThread;
-@property (assign) BOOL shouldExit;
 
 - (void)loopMethod;
 
@@ -47,7 +46,12 @@
 - (void)loopMethod {
     uint64_t nextTime = 0;
     uint64_t currentTime = 0;
-    while (![self.backgroundThread isCancelled] && self.intervalInNanoSeconds > 0) {
+    while (self.intervalInNanoSeconds > 0) {
+        if ([self.backgroundThread isCancelled] || !self.backgroundThread) {
+            [NSThread exit];
+            return;
+        }
+        
         // Do stuff on background thread
         currentTime = mach_absolute_time();
         currentTime *= _timeInfo.numer;
