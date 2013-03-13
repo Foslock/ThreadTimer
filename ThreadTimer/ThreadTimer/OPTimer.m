@@ -49,16 +49,23 @@
 }
 
 - (void)startFiring {
-    [self stopFiring];
-    // Set the current start time
-    self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(loopMethod) object:nil];
-    // [self.backgroundThread setThreadPriority:1.0];
-    [self.backgroundThread start];
+    if (!_isRunning) {
+        _isRunning = YES;
+        [self.backgroundThread cancel];
+        self.backgroundThread = nil;
+        // Set the current start time
+        self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(loopMethod) object:nil];
+        // [self.backgroundThread setThreadPriority:1.0];
+        [self.backgroundThread start];
+    }
 }
 
 - (void)stopFiring {
-    [self.backgroundThread cancel];
-    self.backgroundThread = nil;
+    if (_isRunning) {
+        _isRunning = NO;
+        [self.backgroundThread cancel];
+        self.backgroundThread = nil;
+    }
 }
 
 - (NSTimeInterval)interval {

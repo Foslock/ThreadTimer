@@ -10,7 +10,9 @@
 
 @interface OPTimer : NSObject
 
+@property (readonly) BOOL isRunning;
 @property (readonly) NSTimeInterval interval;
+
 @property (weak) id target;
 @property (assign) SEL selector;
 @property (weak, nonatomic) id userInfo;
