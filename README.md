@@ -11,18 +11,22 @@ Uses the custom class OPTimer to create an accurate timer that uses background t
 
 ###How to use OPTimer
 
-    // Create the timer like any normal Obj-c object
-    OPTimer* timer = [[OPTimer alloc] init];
+    // Create the timer like the normal NSTimer
+    OPTimer* timer = [OPTimer timerWithTimeInterval:0.1f
+                                             target:self
+                                           selector:@selector(timerHasFired:)
+                                           userInfo:nil];
     
-    // Set the delegate, in charge of providing a callback function
-    // Make sure it conforms to the 'OPTimerDelegate' protocol
-    timer.delegate = self;
     
-    // Set the timer's interval (rate at which it calls the callback) IN NANOSECONDS!
-    timer.intervalInNanoSeconds = (1000 * 1000 * 1000) / 1;
-    
-    // Start that bad boy up, since it DOES NOT START AUTOMATICALLY
+    // Start that bad boy up, since it isn't scheduled
     [timer startFiring];
+
+You could also use the other class method to create an automatically started timer like so:
+
+	[OPTimer scheduledTimerWithTimeInterval:1.0f
+                                     target:self
+                                   selector:@selector(otherTimer:)
+                                   userInfo:nil];
 
 ###Disclaimer
 
