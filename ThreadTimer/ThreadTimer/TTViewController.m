@@ -9,7 +9,7 @@
 #import "TTViewController.h"
 #import "OPTimer.h"
 
-@interface TTViewController () <OPTimerDelegate>
+@interface TTViewController ()
 
 @end
 
@@ -19,17 +19,21 @@
 {
     [super viewDidLoad];
 	
-    // Create the timer like any normal Obj-c object
-    OPTimer* timer = [[OPTimer alloc] init];
+    // Create the timer like the normal NSTimer
+    OPTimer* timer = [OPTimer timerWithTimeInterval:0.1f
+                                             target:self
+                                           selector:@selector(timerHasFired:)
+                                           userInfo:nil];
     
-    // Set the delegate, in charge of providing a callback function
-    timer.delegate = self;
     
-    // Set the timer's interval (rate at which it calls the callback) IN NANOSECONDS!
-    timer.intervalInNanoSeconds = (1000 * 1000 * 1000) / 1;
-    
-    // Start that bad boy up, since it DOES NOT START AUTOMATICALLY
+    // Start that bad boy up, since it isn't scheduled
     [timer startFiring];
+    
+    // This one will start on its own (ASAP)
+    [OPTimer scheduledTimerWithTimeInterval:1.0f
+                                     target:self
+                                   selector:@selector(otherTimer:)
+                                   userInfo:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -38,12 +42,18 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - OPTimer Delegate
+#pragma mark - OPTimer callbacks
 
-- (void)timerHasFired:(OPTimer *)timer {
+- (void)timerHasFired:(OPTimer*)timer {
     // This is the callback method that gets called every interval
     // based on the time you set on the timer
-    NSLog(@"OPTimer has fired!");
+    printf("T1: %.3f\n", [[NSDate date] timeIntervalSince1970]);
+}
+
+- (void)otherTimer:(OPTimer*)timer {
+    // This is the callback method that gets called every interval
+    // based on the time you set on the timer
+    printf("T2: %.3f\n", [[NSDate date] timeIntervalSince1970]);
 }
 
 
