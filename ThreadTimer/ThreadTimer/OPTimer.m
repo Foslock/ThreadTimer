@@ -9,7 +9,7 @@
 #import "OPTimer.h"
 #import <mach/mach_time.h>
 
-#define NANO_SECOND_SCALE (1000. * 1000. * 1000.)
+#define NANO_SECOND_SCALE (1000.0f * 1000.0f * 1000.0f)
 
 @interface OPTimer ()
 
@@ -52,7 +52,7 @@
     [self stopFiring];
     // Set the current start time
     self.backgroundThread = [[NSThread alloc] initWithTarget:self selector:@selector(loopMethod) object:nil];
-    [self.backgroundThread setThreadPriority:1.0];
+    // [self.backgroundThread setThreadPriority:1.0];
     [self.backgroundThread start];
 }
 
@@ -77,10 +77,12 @@
 - (void)loopMethod {
     uint64_t currentTime = 0;
     uint64_t currentStartTime = mach_absolute_time();
+    currentStartTime *= _timeInfo.numer;
+    currentStartTime /= _timeInfo.denom;
     uint64_t interval = self.intervalInNanoSeconds;
     uint64_t counter = 0;
     
-    while (self.intervalInNanoSeconds > 0) {
+    while (interval > 0) {
         if (!self.backgroundThread || [self.backgroundThread isCancelled]) {
             [NSThread exit];
             return;
@@ -88,6 +90,8 @@
         
         // Do stuff on background thread
         currentTime = mach_absolute_time();
+        currentTime *= _timeInfo.numer;
+        currentTime /= _timeInfo.denom;
         
         if (currentTime >= currentStartTime + (interval * counter)) {
             counter++;
